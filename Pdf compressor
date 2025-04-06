@@ -1,0 +1,32 @@
+import fitz  # PyMuPDF
+import os
+
+def compress_pdf(input_path, output_path, quality=60):
+    doc = fitz.open(input_path)
+    for page in doc:
+        # Reduce the resolution of images on the page
+        images = page.get_images(full=True)
+        for img_index, img in enumerate(images):
+            xref = img[0]
+            base_image = doc.extract_image(xref)
+            image_bytes = base_image["image"]
+            image_ext = base_image["ext"]
+            
+            # Re-insert image with lower quality (compressing)
+            pix = fitz.Pixmap(doc, xref)
+            if pix.n > 4:  # Convert CMYK to RGB
+                pix = fitz.Pixmap(fitz.csRGB, pix)
+            pix.writePNG("temp_img.png")
+            page.insert_image(pix.irect, filename="temp_img.png")
+            doc.delete_object(xref)
+            os.remove("temp_img.png")
+    
+    doc.save(output_path, garbage=4, deflate=True, clean=True)
+    doc.close()
+
+# Example usage
+input_pdf = "original.pdf"
+output_pdf = "compressed.pdf"
+compress_pdf(input_pdf, output_pdf)
+
+print(f"Compressed PDF saved as: {output_pdf}")
