@@ -1,0 +1,15 @@
+import random
+
+def get_random_joke():
+    jokes = [
+        "Why don’t scientists trust atoms? Because they make up everything!",
+        "Why did the math book look sad? Because it had too many problems.",
+        "I told my computer I needed a break, and it said 'No problem — I’ll go to sleep.'",
+        "Why don’t skeletons fight each other? They don’t have the guts.",
+        "What do you get when you cross a snowman and a vampire? Frostbite."
+    ]
+    return random.choice(jokes)
+
+if __name__ == "__main__":
+    print("Here's a joke for you:")
+    print(get_random_joke())
