@@ -1,0 +1,29 @@
+import requests
+
+API_KEY = "4921bf6a08a84b9087f11823250604"
+BASE_URL = 'http://api.weatherapi.com/v1/current.json'
+
+def get_weather(city):
+    params = {
+        'key': API_KEY,
+        'q': city
+    }
+    response = requests.get(BASE_URL, params=params)
+    data = response.json()
+
+    if 'error' in data:
+        print("Error:", data['error']['message'])
+    else:
+        location = data['location']['name']
+        country = data['location']['country']
+        temp_c = data['current']['temp_c']
+        condition = data['current']['condition']['text']
+        feels_like = data['current']['feelslike_c']
+
+        print(f"\nWeather in {location}, {country}:")
+        print(f"Condition: {condition}")
+        print(f"Temperature: {temp_c}°C (Feels like {feels_like}°C)")
+
+if __name__ == "__main__":
+    city = input("Enter city name: ")
+    get_weather(city)
